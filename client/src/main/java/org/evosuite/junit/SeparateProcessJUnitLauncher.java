@@ -19,22 +19,25 @@
  */
 package org.evosuite.junit;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 
-public class JUnitExecutionException extends Exception {
+public class SeparateProcessJUnitLauncher {
 
-    public JUnitExecutionException(String message) {
-        super(message);
+    public static void main(String[] args) throws Exception {
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Expected result file and at least one test class name");
+        }
+
+        String resultFile = args[0];
+        Class<?>[] testClasses = new Class<?>[args.length - 1];
+        for (int i = 1; i < args.length; i++) {
+            testClasses[i - 1] = Class.forName(args[i]);
+        }
+
+        JUnitResult result = JUnitExecutor.runJUnit(testClasses);
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(resultFile))) {
+            out.writeObject(result);
+        }
     }
-
-    public JUnitExecutionException(Exception e) {
-        super(e);
-    }
-
-    public JUnitExecutionException(String message, Exception e) {
-        super(message, e);
-    }
-
-
-    private static final long serialVersionUID = 9063744097191003972L;
-
 }

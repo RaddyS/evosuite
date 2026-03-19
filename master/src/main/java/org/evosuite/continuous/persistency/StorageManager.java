@@ -53,6 +53,7 @@ import java.util.*;
 public class StorageManager {
 
     private static final Logger logger = LoggerFactory.getLogger(StorageManager.class);
+    private static final String JAXB_NO_OPTIMIZE_PROPERTY = "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize";
 
     private static final String TMP_PREFIX = "tmp_";
 
@@ -433,6 +434,7 @@ public class StorageManager {
         StringWriter writer = null;
         try {
             writer = new StringWriter();
+            configureJaxbForModernJdk();
             JAXBContext context = JAXBContext.newInstance(Project.class);
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true); // TODO remove me!
@@ -967,6 +969,7 @@ public class StorageManager {
 
     private static Project getProject(File current, InputStream stream) {
         try {
+            configureJaxbForModernJdk();
             JAXBContext jaxbContext = JAXBContext.newInstance(Project.class);
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = factory.newSchema(new StreamSource(StorageManager.class.getResourceAsStream("/xsd/ctg_project_report.xsd")));
@@ -1002,5 +1005,9 @@ public class StorageManager {
 
     public boolean isStorageOk() {
         return this.isStorageOk;
+    }
+
+    private static void configureJaxbForModernJdk() {
+        System.setProperty(JAXB_NO_OPTIMIZE_PROPERTY, "true");
     }
 }
