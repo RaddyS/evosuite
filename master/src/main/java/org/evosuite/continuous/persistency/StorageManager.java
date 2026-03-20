@@ -22,7 +22,6 @@ package org.evosuite.continuous.persistency;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.evosuite.Properties;
 import org.evosuite.continuous.project.ProjectStaticData;
 import org.evosuite.utils.ArrayUtil;
@@ -43,6 +42,8 @@ import java.io.*;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -56,6 +57,8 @@ public class StorageManager {
     private static final String JAXB_NO_OPTIMIZE_PROPERTY = "com.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize";
 
     private static final String TMP_PREFIX = "tmp_";
+    private static final DateTimeFormatter TMP_TIMESTAMP_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 
     private File tmpLogs = null;
     private File tmpReports = null;
@@ -154,7 +157,7 @@ public class StorageManager {
             return false;
         }
 
-        String time = DateFormatUtils.format(new Date(), "yyyy_MM_dd_HH_mm_ss", Locale.getDefault());
+        String time = LocalDateTime.now().format(TMP_TIMESTAMP_FORMAT);
         File tmp = null;
 
         if (Properties.CTG_GENERATION_DIR_PREFIX == null)
