@@ -176,6 +176,7 @@
                             <targetTests>
                                 <param>${pit.tests}</param>
                             </targetTests>
+                            <verbosity>NO_SPINNER</verbosity>
                         </configuration>
                         <executions>
                             <execution>
